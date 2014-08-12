@@ -10,7 +10,9 @@
 
 @interface ACDetailViewController : UIViewController <UISplitViewControllerDelegate>
 
-@property (strong, nonatomic) id detailItem;
+@property (strong, nonatomic) NSManagedObject *detailItem;
 
-@property (weak, nonatomic) IBOutlet UILabel *detailDescriptionLabel;
+@property (strong)  UILabel *tweetLabel;
+@property (strong)  UIImageView *imageView;
+@property (assign) BOOL didAddConstraints;
 @end

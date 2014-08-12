@@ -7,6 +7,11 @@
 	objects = {
 
 /* Begin PBXBuildFile section */
+		0EAB746B19956E3F009D11A5 /* ACTwitterFacade.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAB746A19956E3F009D11A5 /* ACTwitterFacade.m */; };
+		0EAB746D19956EC9009D11A5 /* Social.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EAB746C19956EC8009D11A5 /* Social.framework */; };
+		0EAB746F19956FD0009D11A5 /* Accounts.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EAB746E19956FD0009D11A5 /* Accounts.framework */; };
+		0EAB74721995729D009D11A5 /* ACLogger.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAB74711995729D009D11A5 /* ACLogger.m */; };
+		0EAB747519992034009D11A5 /* ACOperationQueue.m in Sources */ = {isa = PBXBuildFile; fileRef = 0EAB747419992034009D11A5 /* ACOperationQueue.m */; };
 		0EC13A0819953F8E00F3B191 /* UIKit.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EC13A0719953F8E00F3B191 /* UIKit.framework */; };
 		0EC13A0A19953F8E00F3B191 /* Foundation.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EC13A0919953F8E00F3B191 /* Foundation.framework */; };
 		0EC13A0C19953F8E00F3B191 /* CoreGraphics.framework in Frameworks */ = {isa = PBXBuildFile; fileRef = 0EC13A0B19953F8E00F3B191 /* CoreGraphics.framework */; };
@@ -25,6 +30,15 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
+		0E582D0219998414001C18F8 /* ReadMe */ = {isa = PBXFileReference; lastKnownFileType = text; path = ReadMe; sourceTree = "<group>"; };
+		0EAB746919956E3F009D11A5 /* ACTwitterFacade.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACTwitterFacade.h; sourceTree = "<group>"; };
+		0EAB746A19956E3F009D11A5 /* ACTwitterFacade.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACTwitterFacade.m; sourceTree = "<group>"; };
+		0EAB746C19956EC8009D11A5 /* Social.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Social.framework; path = System/Library/Frameworks/Social.framework; sourceTree = SDKROOT; };
+		0EAB746E19956FD0009D11A5 /* Accounts.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Accounts.framework; path = System/Library/Frameworks/Accounts.framework; sourceTree = SDKROOT; };
+		0EAB74701995729D009D11A5 /* ACLogger.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACLogger.h; sourceTree = "<group>"; };
+		0EAB74711995729D009D11A5 /* ACLogger.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACLogger.m; sourceTree = "<group>"; };
+		0EAB747319992034009D11A5 /* ACOperationQueue.h */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.h; path = ACOperationQueue.h; sourceTree = "<group>"; };
+		0EAB747419992034009D11A5 /* ACOperationQueue.m */ = {isa = PBXFileReference; fileEncoding = 4; lastKnownFileType = sourcecode.c.objc; path = ACOperationQueue.m; sourceTree = "<group>"; };
 		0EC13A0419953F8E00F3B191 /* Pweet.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = Pweet.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		0EC13A0719953F8E00F3B191 /* UIKit.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = UIKit.framework; path = System/Library/Frameworks/UIKit.framework; sourceTree = SDKROOT; };
 		0EC13A0919953F8E00F3B191 /* Foundation.framework */ = {isa = PBXFileReference; lastKnownFileType = wrapper.framework; name = Foundation.framework; path = System/Library/Frameworks/Foundation.framework; sourceTree = SDKROOT; };
@@ -53,6 +67,8 @@
 			isa = PBXFrameworksBuildPhase;
 			buildActionMask = 2147483647;
 			files = (
+				0EAB746F19956FD0009D11A5 /* Accounts.framework in Frameworks */,
+				0EAB746D19956EC9009D11A5 /* Social.framework in Frameworks */,
 				0EC13A0819953F8E00F3B191 /* UIKit.framework in Frameworks */,
 				0EC13A0A19953F8E00F3B191 /* Foundation.framework in Frameworks */,
 				0EC13A0C19953F8E00F3B191 /* CoreGraphics.framework in Frameworks */,
@@ -63,6 +79,40 @@
 /* End PBXFrameworksBuildPhase section */
 
 /* Begin PBXGroup section */
+		0EAB74761999377B009D11A5 /* Utilitiy */ = {
+			isa = PBXGroup;
+			children = (
+				0EAB74701995729D009D11A5 /* ACLogger.h */,
+				0EAB74711995729D009D11A5 /* ACLogger.m */,
+				0EAB747319992034009D11A5 /* ACOperationQueue.h */,
+				0EAB747419992034009D11A5 /* ACOperationQueue.m */,
+			);
+			name = Utilitiy;
+			sourceTree = "<group>";
+		};
+		0EAB74771999378E009D11A5 /* Model */ = {
+			isa = PBXGroup;
+			children = (
+				0EC13A2719953F8E00F3B191 /* Pweet.xcdatamodeld */,
+				0EAB746919956E3F009D11A5 /* ACTwitterFacade.h */,
+				0EAB746A19956E3F009D11A5 /* ACTwitterFacade.m */,
+			);
+			name = Model;
+			sourceTree = "<group>";
+		};
+		0EAB7478199937A4009D11A5 /* View Controller */ = {
+			isa = PBXGroup;
+			children = (
+				0EC13A2119953F8E00F3B191 /* MainStoryboard_iPhone.storyboard */,
+				0EC13A2419953F8E00F3B191 /* MainStoryboard_iPad.storyboard */,
+				0EC13A2A19953F8E00F3B191 /* ACMasterViewController.h */,
+				0EC13A2B19953F8E00F3B191 /* ACMasterViewController.m */,
+				0EC13A2D19953F8E00F3B191 /* ACDetailViewController.h */,
+				0EC13A2E19953F8E00F3B191 /* ACDetailViewController.m */,
+			);
+			name = "View Controller";
+			sourceTree = "<group>";
+		};
 		0EC139FB19953F8D00F3B191 = {
 			isa = PBXGroup;
 			children = (
@@ -83,6 +133,8 @@
 		0EC13A0619953F8E00F3B191 /* Frameworks */ = {
 			isa = PBXGroup;
 			children = (
+				0EAB746E19956FD0009D11A5 /* Accounts.framework */,
+				0EAB746C19956EC8009D11A5 /* Social.framework */,
 				0EC13A0719953F8E00F3B191 /* UIKit.framework */,
 				0EC13A0919953F8E00F3B191 /* Foundation.framework */,
 				0EC13A0B19953F8E00F3B191 /* CoreGraphics.framework */,
@@ -94,15 +146,12 @@
 		0EC13A0F19953F8E00F3B191 /* Pweet */ = {
 			isa = PBXGroup;
 			children = (
+				0E582D0219998414001C18F8 /* ReadMe */,
 				0EC13A1819953F8E00F3B191 /* ACAppDelegate.h */,
 				0EC13A1919953F8E00F3B191 /* ACAppDelegate.m */,
-				0EC13A2119953F8E00F3B191 /* MainStoryboard_iPhone.storyboard */,
-				0EC13A2419953F8E00F3B191 /* MainStoryboard_iPad.storyboard */,
-				0EC13A2A19953F8E00F3B191 /* ACMasterViewController.h */,
-				0EC13A2B19953F8E00F3B191 /* ACMasterViewController.m */,
-				0EC13A2D19953F8E00F3B191 /* ACDetailViewController.h */,
-				0EC13A2E19953F8E00F3B191 /* ACDetailViewController.m */,
-				0EC13A2719953F8E00F3B191 /* Pweet.xcdatamodeld */,
+				0EAB7478199937A4009D11A5 /* View Controller */,
+				0EAB74771999378E009D11A5 /* Model */,
+				0EAB74761999377B009D11A5 /* Utilitiy */,
 				0EC13A1019953F8E00F3B191 /* Supporting Files */,
 			);
 			path = Pweet;
@@ -151,6 +200,11 @@
 				CLASSPREFIX = AC;
 				LastUpgradeCheck = 0460;
 				ORGANIZATIONNAME = "Arthur Conner";
+				TargetAttributes = {
+					0EC13A0319953F8E00F3B191 = {
+						DevelopmentTeam = 4GZYFCNRY8;
+					};
+				};
 			};
 			buildConfigurationList = 0EC139FF19953F8D00F3B191 /* Build configuration list for PBXProject "Pweet" */;
 			compatibilityVersion = "Xcode 3.2";
@@ -195,6 +249,9 @@
 				0EC13A2919953F8E00F3B191 /* Pweet.xcdatamodeld in Sources */,
 				0EC13A2C19953F8E00F3B191 /* ACMasterViewController.m in Sources */,
 				0EC13A2F19953F8E00F3B191 /* ACDetailViewController.m in Sources */,
+				0EAB747519992034009D11A5 /* ACOperationQueue.m in Sources */,
+				0EAB74721995729D009D11A5 /* ACLogger.m in Sources */,
+				0EAB746B19956E3F009D11A5 /* ACTwitterFacade.m in Sources */,
 			);
 			runOnlyForDeploymentPostprocessing = 0;
 		};
@@ -289,10 +346,13 @@
 		0EC13A3319953F8E00F3B191 /* Debug */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pweet/Pweet-Prefix.pch";
 				INFOPLIST_FILE = "Pweet/Pweet-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Debug;
@@ -300,10 +360,13 @@
 		0EC13A3419953F8E00F3B191 /* Release */ = {
 			isa = XCBuildConfiguration;
 			buildSettings = {
+				CODE_SIGN_IDENTITY = "iPhone Developer";
+				"CODE_SIGN_IDENTITY[sdk=iphoneos*]" = "iPhone Developer";
 				GCC_PRECOMPILE_PREFIX_HEADER = YES;
 				GCC_PREFIX_HEADER = "Pweet/Pweet-Prefix.pch";
 				INFOPLIST_FILE = "Pweet/Pweet-Info.plist";
 				PRODUCT_NAME = "$(TARGET_NAME)";
+				PROVISIONING_PROFILE = "";
 				WRAPPER_EXTENSION = app;
 			};
 			name = Release;
@@ -327,6 +390,7 @@
 				0EC13A3419953F8E00F3B191 /* Release */,
 			);
 			defaultConfigurationIsVisible = 0;
+			defaultConfigurationName = Release;
 		};
 /* End XCConfigurationList section */
 

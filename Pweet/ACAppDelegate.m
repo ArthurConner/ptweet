@@ -9,6 +9,7 @@
 #import "ACAppDelegate.h"
 
 #import "ACMasterViewController.h"
+#import "ACTwitterFacade.h"
 
 @implementation ACAppDelegate
 
@@ -32,6 +33,12 @@
         ACMasterViewController *controller = (ACMasterViewController *)navigationController.topViewController;
         controller.managedObjectContext = self.managedObjectContext;
     }
+    
+    ACTwitterFacade *facade = [ACTwitterFacade sharedFacade];
+    facade.uiManagedObjectContext = self.managedObjectContext;
+    
+    [facade getTweets];
+    
     return YES;
 }
 							
@@ -89,7 +96,7 @@
     
     NSPersistentStoreCoordinator *coordinator = [self persistentStoreCoordinator];
     if (coordinator != nil) {
-        _managedObjectContext = [[NSManagedObjectContext alloc] init];
+        _managedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSMainQueueConcurrencyType];
         [_managedObjectContext setPersistentStoreCoordinator:coordinator];
     }
     return _managedObjectContext;

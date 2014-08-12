@@ -1,0 +1,13 @@
+
+PTweet - sample code for (http://www.peek.com/jobs/challenge3) all rights Arthur Conner
+
+Discussion of Architecture
+
+External Libraries - Although no third party library was used, the ACOperationQueue came in from another project of mine. The main point of the class is to mimic as much of the NSOperationQueue, but allow for semaphores for asynchronous callbacks. If we were targeting 7.0 and up I probably could have used NSURLSession instead. The urlstack object is new for this code. Since we are scrolling, we want the newest cells to load first and those that are still processing to continue to load. A stack made sense.
+
+CoreData - I used coredata mainly because it interfaces well with NSFetchResultsController. A great deal of the updating behavior was free. The ACMasterViewController and ACDetailViewController are minimally changed from the product defaults. It is nice since we a universal app out of it.
+
+    Normally I would have a tweet subclass of NSManagedObject, but the object wasn't performing any actions except for imageAtUrl in the twitterfacade.
+    
+    
+Error Handling - normally errors would be something more than NSLog, but at least there is a central code path.
