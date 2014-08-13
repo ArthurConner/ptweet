@@ -25,6 +25,8 @@
 @property (strong) NSMutableSet *pendingDownloads;
 @property (strong) ACUrlOperationStack *imageStack;
 @property (strong) ACOperationQueue *twitterRequestQueue;
+@property (strong) NSString *entityName;
+@property (strong) NSString *primaryKey;
 @end
 
 @implementation ACTwitterFacade
@@ -41,6 +43,9 @@
         retFacade.imageStack.urlDelegate = retFacade;
         
         retFacade.twitterRequestQueue = [ACOperationQueue serialQueueWithName:@"twitterRequests" delegate:nil];
+        retFacade.entityName = @"Tweet";
+        retFacade.primaryKey = @"idint";
+        
         //retFacade.imageStack.verbose = YES;
         
     });
@@ -49,28 +54,39 @@
 
 #pragma mark - core data interaction
 
--(void)_loadTweetArray:(NSArray *)tweetList{
-    
-    NSString *entityName = @"Tweet";
-    NSString *primaryKey = @"idint";
-    
+
+-(void)_configureBackgroundQueue{
     if (self.backgroundManagedObjectContext==nil){
         self.backgroundManagedObjectContext = [[NSManagedObjectContext alloc] initWithConcurrencyType:NSPrivateQueueConcurrencyType];
-        self.backgroundManagedObjectContext.parentContext = self.uiManagedObjectContext;
     }
     
-    NSEntityDescription *entity = [NSEntityDescription entityForName:entityName inManagedObjectContext:self.uiManagedObjectContext];
+    if ( self.backgroundManagedObjectContext.parentContext ==nil){
+         self.backgroundManagedObjectContext.parentContext = self.uiManagedObjectContext;
+    }
+}
+
+
+-(void)_loadTweetArray:(NSArray *)tweetList{
     
+    
+    [self _configureBackgroundQueue];
+    
+    NSEntityDescription *entity = [NSEntityDescription entityForName:self.entityName inManagedObjectContext:self.uiManagedObjectContext];
+    
+ //   return;
+//#warning this breaks
     
     [self.backgroundManagedObjectContext performBlock:^{
         
         
-        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: entityName];
-        [request setPropertiesToFetch:@[primaryKey]];
+        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: self.entityName];
+        [request setPropertiesToFetch:@[self.primaryKey]];
+        request.resultType = NSDictionaryResultType;
+        
         
         NSError *error = nil;
         
-        NSArray *results = [self.uiManagedObjectContext executeFetchRequest:request error:&error];
+        NSArray *results = [self.backgroundManagedObjectContext executeFetchRequest:request error:&error];
         
         if (error){
             [self _handleError:error];
@@ -81,12 +97,12 @@
         //from the highest and lowest return values.
         NSMutableSet *alreadyInSystem = [NSMutableSet set];
         for (NSManagedObject *obj in results){
-            [alreadyInSystem addObject:[obj valueForKey:primaryKey]];
+            [alreadyInSystem addObject:[obj valueForKey:self.primaryKey]];
         }
         
         for (NSDictionary *dict in tweetList){
             
-            NSObject *pKey = [dict objectForKey:primaryKey];
+            NSObject *pKey = [dict objectForKey:self.primaryKey];
             if (![alreadyInSystem member:pKey]){
                 [alreadyInSystem addObject:pKey];
                 
@@ -133,7 +149,7 @@
             NSString *url = [user objectForKey:@"profile_image_url_https"];
             
             if (text && name && url && idint){
-                [add addObject:@{@"text":text,@"name":name,@"url":url,@"idint":idint}];
+                [add addObject:@{@"text":text,@"name":name,@"url":url,self.primaryKey:idint}];
             }
         }
         
@@ -189,7 +205,7 @@
 
 -(void)_handleError:(NSError *)error{
     
-    [ACLogger logError:[error description] module:@"ACTwitterFacade"];
+    [ACLogger logError:[error localizedDescription] module:@"ACTwitterFacade"];
     
 }
 
@@ -210,9 +226,7 @@
         
         
         if(granted) {
-            
-            
-            
+
             NSArray *accountsArray = [self.accountStore accountsWithAccountType:accountTypeTw];
             
             if (accountsArray.count){
@@ -394,19 +408,19 @@
         NSDictionary *parameters = nil;
         
         
-        NSString  *idint = @"idint";
+     
         
         //search above the newest tweet
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Tweet"];
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:self.entityName];
         
         fetchRequest.fetchLimit = 1;
-        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:idint ascending:NO]];
-        fetchRequest.propertiesToFetch   = @[idint];
+        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:self.primaryKey ascending:NO]];
+        fetchRequest.propertiesToFetch   = @[self.primaryKey];
         
         NSError *error = nil;
         
         NSManagedObject *tweet = [self.uiManagedObjectContext executeFetchRequest:fetchRequest error:&error].lastObject;
-        NSNumber *checkNumber = [tweet valueForKey:idint];
+        NSNumber *checkNumber = [tweet valueForKey:self.primaryKey];
         
         
         if (checkNumber) {
@@ -435,19 +449,19 @@
     //just to make sure we are on the right queue
     [[NSOperationQueue mainQueue] addOperationWithBlock:^{
         ACOperation  *op= nil;
-        NSString  *idint = @"idint";
         
-        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:@"Tweet"];
+        
+        NSFetchRequest *fetchRequest = [[NSFetchRequest alloc] initWithEntityName:self.entityName];
         
         fetchRequest.fetchLimit = 1;
         //search below smallest id
-        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:idint ascending:YES]];
-        fetchRequest.propertiesToFetch   = @[idint];
+        fetchRequest.sortDescriptors = @[[NSSortDescriptor sortDescriptorWithKey:self.primaryKey ascending:YES]];
+        fetchRequest.propertiesToFetch   = @[self.primaryKey];
         
         NSError *error = nil;
         
         NSManagedObject *tweet = [self.uiManagedObjectContext executeFetchRequest:fetchRequest error:&error].lastObject;
-        NSNumber *checkNumber = [tweet valueForKey:idint];
+        NSNumber *checkNumber = [tweet valueForKey:self.primaryKey];
         
         
         if (checkNumber) {
@@ -505,9 +519,27 @@
 }
 
 
+-(void)_updateContext:(NSManagedObjectContext *)context withObjectId:(NSArray *)items{
+    for (NSManagedObjectID *objID in items){
+        NSManagedObject *obj = [context objectWithID:objID];
+        [context refreshObject:obj mergeChanges:YES];
+    }
+    
+    
+    
+    if (context.parentContext){
+        [context save:nil];
+        [context.parentContext performBlock:^{
+        [self _updateContext:context.parentContext withObjectId:items];
+        }];
+    }
+
+}
+
 -(void)acURLOperationStack:(ACUrlOperationStack *)stack didDownloadFrom:(NSString *)urlStr data:(NSData *)data error:(NSError *)error{
     
     [self.pendingDownloads removeObject:urlStr];
+    [self _configureBackgroundQueue];
     
     if (error){
         [self _handleError:error];
@@ -520,35 +552,77 @@
                 
                 [self.imageCache setObject:image forKey:urlStr];
                 
-                NSString *entityName = @"Tweet";
                 NSString *updateField = @"imageupdate";
+                NSString *filepathTime = [[NSDate date]description];
+                NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url=%@",urlStr];
+                NSManagedObjectContext *context = self.backgroundManagedObjectContext;
                 
-                [self.uiManagedObjectContext performBlock:^{
+                //this is what we would use in xcode 6 for ios 8.
+                //I wanted to see the new api.
+#if 0
+                if (NSClassFromString(@"NSBatchUpdateRequest") != nil) {
+
+                    //not sure why this does not work with the background context
+                    context= self.uiManagedObjectContext;
                     
-                    NSError *error;
+                    [context performBlock:^{
+                        NSBatchUpdateRequest *batchRequest = [NSBatchUpdateRequest batchUpdateRequestWithEntityName:self.entityName];
+                        batchRequest.propertiesToUpdate = @{updateField:filepathTime};
+                        [batchRequest setPredicate:predicate];
+                        batchRequest.resultType = NSUpdatedObjectIDsResultType;
+
+                        NSError *requestError;
+                        NSPersistentStoreResult *resultx =[context  executeRequest:batchRequest error:&requestError];
+                        NSBatchUpdateResult *result = nil;
+                        NSLog(@"results %@",resultx);
+                        
+                        if ([resultx respondsToSelector:@selector(result)]){
+                            result = (NSBatchUpdateResult*)resultx;
+                              NSLog(@"result %@",result);
+                            
+                            [self _updateContext:context withObjectId:result.result];
+                        }
+   
+                    }];
                     
+#else
+                    if (0){
+                        
+#endif  
+                        
+                } else {
+    
                     
-                    NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: entityName];
-                    NSPredicate *predicate = [NSPredicate predicateWithFormat:@"url=%@",urlStr];
-                    [request setPredicate:predicate];
+                    [context performBlock:^{
+                        
+                        NSError *error;
+                        NSFetchRequest *request = [NSFetchRequest fetchRequestWithEntityName: self.entityName];
+                        [request setPredicate:predicate];
+                        
+                        NSArray *results = [context executeFetchRequest:request error:&error];
+                        
+                        if (error){
+                            [self _handleError:error];
+                            return ;
+                        }
+                        for (NSManagedObject *obj in results){
+                            [obj setValue:filepathTime forKey:updateField   ];
+                        }
+                        
+                        if (![context save:&error]) {
+                            [self _handleError:error];
+                        } else if (context.parentContext){
+                            [context.parentContext performBlock:^{
+                                NSError *error;
+                                if (![context save:&error]) {
+                                    [self _handleError:error];
+                                }
+                            }];
+                        }
+                        
+                    }];
                     
-                    NSArray *results = [self.uiManagedObjectContext executeFetchRequest:request error:&error];
-                    
-                    if (error){
-                        [self _handleError:error];
-                        return ;
-                    }
-                    
-                    NSString *filepathTime = [[NSDate date]description];
-                    for (NSManagedObject *obj in results){
-                        [obj setValue:filepathTime forKey:updateField   ];
-                    }
-                    
-                    if (![self.uiManagedObjectContext save:&error]) {
-                        [self _handleError:error];
-                    }
-                    
-                }];
+                }
             }
         }
     }
